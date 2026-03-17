@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: usdt-tracker-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/instance
+    networks:
+      - tracker-network
+
+  frontend:
+    image: nginx:alpine
+    container_name: usdt-tracker-frontend
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+    networks:
+      - tracker-network
+
+networks:
+  tracker-network:
+    driver: bridge
